@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.rrk.springboot.learnjpaandhibernate.course.Course;
+
 // A repository which talks to the course table
 // Fire queries to DataBase using Spring JDBC
 
@@ -16,11 +18,23 @@ public class CourseJdbcRepository {
 	private static String INSERT_QUERY = 
 			"""
 				INSERT INTO course(id, name, author)
-				VALUES(1, 'Learn Java, Spring, Spring Boot', 'rrk');
+				VALUES(?, ?, ?);
 			""";
 	
-	public void insert() {
-		springJdbcTemplate.update(INSERT_QUERY);
+	private static String DELETE_QUERY = 
+			"""
+				DELETE FROM course
+				WHERE id=?;
+			""";
+	
+	public void insert(Course course) {
+		springJdbcTemplate.update(INSERT_QUERY, 
+				course.getId(), course.getName(), course.getAuthor());
+	}
+	
+	public void deleteById(long id) {
+		springJdbcTemplate.update(DELETE_QUERY,
+				id);
 	}
 	
 }
